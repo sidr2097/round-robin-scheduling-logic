@@ -2,79 +2,76 @@
 
 int main()
 {
-	//Variable Declarations
-	int i,j,n,time,total,bt[10],at[10],flag[10];		//n = total processes		bt = burst time		at = arrival time
-	int wt[10],ta[10],lt[10];		//wt = wait time		ta = turn around time		lt = time left from burst time
+	int total,n,time,i,j,at[10],bt[10],wt[10],rem[10],flag[10];
 	
-	//Taking number of processes from user
-	printf("Enter the number of processes : ");
-	scanf("%d",&n);
-	total=n;
+	printf("Enter the total number of processes : ");
+	scanf("%d",&total);
+	n=total;
 	
-	//Time quatum input
-	printf("\nEnter the time quantum : ");
+	printf("\nEnter the time slice : ");
 	scanf("%d",&time);
 	
-	//Details of each process
-	for(i=0;i<n;i++)
+	for(i=0;i<total;i++)
 	{
-		printf("\nEnter the arrival time for P[%d] : ",i+1);
+		printf("\nEnter the arrival time for P[%d]",i+1);
 		scanf("%d",&at[i]);
-		printf("\nEnter the burst time for P[%d] : ",i+1);
+		printf("\nEnter the burst time for P[%d]",i+1);
 		scanf("%d",&bt[i]);
-		lt[i]=bt[i];
+		rem[i]=bt[i];
 	}
 	
-	//Setting flags for each process
-	for(i=0;i<n;i++)
+	for(i=0;i<total;i++)
 	{
-		flag[i]=1;
 		wt[i]=0;
+		flag[i]=1;
 	}
 	
-	while(n!=0)
+	while(total!=0)
 	{
-		for(i=0;i<n;i++)
+		for(i=0;i<total;i++)
 		{
-			if(lt[i]>=time)
+			if(rem[i]>=time)
 			{
-				for(j=0;j<n;i++)
+				for(j=0;j<total;j++)
 				{
-					if( (i!=j) && (flag[i]==1) && (lt[i]==0) )
+					if( (j!=i) && flag[j]==1)
 					{
 						wt[j]=wt[j]+time;
 					}
+				}
 				
-					lt[i]=lt[i]-time;
-				
-					if(lt[i]==0);
-					{
-						flag[i]=0;
-						n=n-1;
-					}
-				
+				rem[i]=rem[i]-time;
+				if(rem[i]==0)
+				{
+					flag[i]=0;
+					total=total-1;
 				}
 			}
 			else
 			{
-				for(j=0;j<n;j++)
+				for(j=0;j<total;j++)
 				{
-					if( (i!=j) && (flag[i]==1) && (lt[i]==0) )
+					if( (j!=i) && (flag[j]==1) )
 					{
-						wt[j]=wt[j]+lt[i];
+						wt[j]=wt[j]+rem[i];
 					}
-				
-					lt[i]=0;
-					n=n-1;
-					flag[i]=0;
 				}
+				rem[i]=0;
+				flag[i]=0;
+				total=total-1;
 			}
 		}
 	}
-	printf("\nProcess \t\tArrival time \t\tBurst time \t\tWaiting time\n");
-	for(i=0;i<total;i++)
+	
+	for(i=0;i<n;i++)
 	{
-		printf("\nP[%d] \t\t\t%d \t\t\t%d \t\t\t%d",i+1,at[i],bt[i],wt[i]);
+		wt[i]=wt[i]-at[i];
 	}
-	printf("Hello");
+	
+	printf("\nProcess \t\tArrival time \t\tBurst time \t\tWaiting time\n");
+	for(i=0;i<n;i++)
+	{
+		printf("\nP[%d] \t\t\t%d \t\t\t%d \t\t%d",i+1,at[i],bt[i],wt[i]);
+	}
+	return 0;
 }
